@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../partials/header %>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+          <h2>Recuperar Senha</h2>
+          <hr /> <br />
+
+          <% if(success) { %>
+            <div class="alert alter-success">
+              <%= success %>
+            </div>
+          <% } %>
+
+          <% if(error) { %>
+            <div class="alert alter-danger">
+              <%= error %>
+            </div>
+          <% } %>
+
+          <p>
+            
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

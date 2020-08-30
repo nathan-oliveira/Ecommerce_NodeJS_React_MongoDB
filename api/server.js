@@ -23,7 +23,6 @@ const dbs = require("./config/database");
 const dbURI = isProduction ? dbs.dbProduction : dbs.dbTest;
 mongoose.connect(dbURI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
   useCreateIndex: true
 });
 
@@ -31,49 +30,36 @@ mongoose.connect(dbURI, {
 app.set("view engine", "ejs");
 
 // CONFIGURAÇÕES
-
-if(!isProduction) return app.use(morgan("dev"));
-app.use(cors);
+if(!isProduction) app.use(morgan("dev"));
+app.use(cors());
 app.disable('x-powered-by');
 app.use(compression());
 
 // SETUP BODY PARSER
-app.use(bodyParser.urlencoded({
-  extended: false,
-  limit: 1.5*1024*1024
-}));
-
-app.use(bodyParser.json({
-  limit: 1.5*1024*1024
-}));
+app.use(bodyParser.urlencoded({ extended: false, limit: 1.5*1024*1024 }));
+app.use(bodyParser.json({ limit: 1.5*1024*1024 }));
 
 // MODELS
 require("./models");
-
 // ROTAS
 app.use("/", require("./routes"));
 
-// ROTA - 404
+// 404 - ROTA
 app.use((req, res, next) => {
   const err = new Error("Not Found");
   err.status = 404;
   next(err);
-})
+});
 
 // ROTA - 422, 500, 401
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
-  if(!err.status !== 404) console.warn("Error: ", err.message, new Date());
-  res.json({
-    errors: {
-      message: err.message,
-      status: err.status
-    }
-  })
-})
+  if(err.status !== 404) console.warn("Error: ", err.message, new Date());
+  res.json(err);
+});
 
 // ESCUTAR
 app.listen(PORT, (err) => {
   if(err) throw err;
   console.log(`Rodando na //localhost:${PORT}`);
-})
+});
